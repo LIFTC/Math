@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<!-- MATH — times tables 1–12.  © 2026 LIFTC. All rights reserved. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>MATH — times tables 1–12</title>
+<meta name="theme-color" content="#ffe9a8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MATH">
+<meta name="description" content="Times tables practice, 1 to 12.">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" sizes="192x192" href="./icon-192.png">
+<link rel="icon" sizes="512x512" href="./icon-512.png">
+<link rel="manifest" href="./manifest.json">
+<style>
+  :root{
+    --ink:#241f1a;
+    --slate-900:#232629;
+    --slate-800:#2c3033;
+    --slate-700:#3a3f43;
+    --slate-600:#4c5257;
+    --slate-500:#6b7278;
+    --slate-300:#c6ced4;
+    --slate-200:#e7ecef;
+    --chalk:#ffffff;
+    --go:#96d97e;
+    --stop:#ff8079;
+    --warn:#e6b455;
+    --coral:#ff9e8d;
+    --mint:#6fddd4;
+    --sky:#7cc0f0;
+    --sun:#ffd166;
+    --grape:#c3a6f5;
+    --cream:#fffdf7;
+    --font:"Aptos","Aptos Display","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  button,.key,.mode,.chip-btn,.edit,.btn,.mute{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+  body{
+    margin:0;min-height:100vh;min-height:100dvh;overscroll-behavior-y:contain;font-family:var(--font);
+    background:#232629;
+    background-image:radial-gradient(circle at 50% 0%,#35393d 0%,#232629 60%,#1b1e20 100%);
+    color:var(--chalk);
+    display:flex;justify-content:center;
+    padding:calc(20px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+            calc(44px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+    transition:background-color .45s ease;
+  }
+  body.bright{
+    background:#ffe9a8;
+    background-image:linear-gradient(165deg,#ffe9a8 0%,#ffd3d8 42%,#c9ecff 100%);
+    color:var(--ink);
+  }
+  .app{width:100%;max-width:520px}
+
+  /* ---------- logo ---------- */
+  .logo{display:flex;align-items:center;gap:12px;justify-content:center;margin:8px 0 22px;position:relative}
+  .logo .mark{
+    background:var(--chalk);color:var(--ink);font-weight:800;letter-spacing:.22em;font-size:20px;
+    padding:10px 14px 10px 20px;border-radius:6px;box-shadow:0 6px 0 #9aa1a7;transition:box-shadow .3s ease;
+  }
+  .logo .ops{display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:13px;color:var(--slate-300);line-height:1}
+  .logo .ops span{background:var(--slate-700);border-radius:4px;padding:4px 5px;text-align:center;transition:background .3s ease,color .3s ease}
+  body.bright .logo .mark{background:var(--ink);color:#fffdf7;box-shadow:0 6px 0 #ff7d6b}
+  body.bright .logo .ops span{color:var(--ink);font-weight:700}
+  body.bright .logo .ops span:nth-child(1){background:var(--coral)}
+  body.bright .logo .ops span:nth-child(2){background:var(--mint)}
+  body.bright .logo .ops span:nth-child(3){background:var(--sun)}
+  body.bright .logo .ops span:nth-child(4){background:var(--sky)}
+  .mute{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    width:40px;height:40px;border-radius:9px;cursor:pointer;
+    background:var(--slate-700);border:1px solid var(--slate-600);
+    color:var(--slate-200);font-family:var(--font);font-size:16px;line-height:1;
+  }
+  .mute.off{color:var(--slate-500);background:transparent}
+  .mute.off::after{content:"";position:absolute;left:7px;right:7px;top:calc(50% - 1px);height:2px;
+                   background:currentColor;transform:rotate(-42deg);border-radius:2px}
+  body.bright .mute{background:#fff;border-color:#f0dfc4;color:#8a7f70}
+
+  /* ---------- panels ---------- */
+  .panel{background:var(--slate-800);border:1px solid var(--slate-700);border-radius:14px;padding:22px}
+  body.bright .panel{background:var(--cream);border-color:#f2e4cb;box-shadow:0 7px 0 rgba(255,125,107,.16)}
+  .screen{display:none}
+  .screen.on{display:block;animation:fade .25s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h1{font-size:22px;margin:0 0 4px;font-weight:700}
+  .sub{color:var(--slate-300);font-size:14px;margin:0 0 18px;line-height:1.5}
+  body.bright .sub{color:#7d7266}
+  label{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate-300);margin-bottom:7px}
+  body.bright label{color:#8a7f70}
+  input[type=text],select{
+    width:100%;font-family:var(--font);font-size:17px;padding:13px 14px;
+    background:var(--slate-900);border:1px solid var(--slate-600);border-radius:10px;color:var(--chalk);
+  }
+  body.bright input[type=text],body.bright select{background:#fff;border-color:#ecdcc2;color:var(--ink)}
+  input[type=text]:focus,select:focus{outline:2px solid #ff7d6b;outline-offset:1px;border-color:transparent}
+
+  .setup{display:flex;align-items:center;justify-content:space-between;gap:10px;
+         margin-top:14px;font-size:14px;color:#7d7266;font-variant-numeric:tabular-nums}
+  .setup > span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* On a narrow phone the track name gets its own line instead of vanishing. */
+  @media (max-width:390px){
+    .setup{flex-wrap:wrap;row-gap:8px}
+    .setup > span:first-child{flex:1 0 100%;white-space:normal;overflow:visible}
+  }
+  .edit{font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none;
+        background:#fff;border:1px solid #e8d6ba;color:var(--ink);border-radius:99px;padding:7px 14px}
+  .edit:hover{background:#fff3dd}
+  .tuner{display:none;margin-top:11px;background:#fff7e9;border:1px solid #f2e4cb;border-radius:11px;padding:15px}
+  .tuner.open{display:block}
+  .tuner label{margin-bottom:9px}
+  .tune-row{display:flex;align-items:center;gap:13px}
+  .tune-row b{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;min-width:62px;text-align:right}
+  input[type=range]{flex:1;height:28px;-webkit-appearance:none;appearance:none;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:7px;border-radius:99px;background:#ecdcc2}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;
+    margin-top:-10px;border-radius:50%;background:#ff7d6b;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.22)}
+  input[type=range]::-moz-range-track{height:7px;border-radius:99px;background:#ecdcc2}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#ff7d6b;border:3px solid #fff}
+  .hint{font-size:12.5px;line-height:1.5;color:#8a7f70;margin:8px 0 0}
+  body:not(.bright) .hint{color:#9aa2a8;text-align:center}
+  .chips{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+  .chip-btn{font-family:var(--font);font-size:13px;cursor:pointer;background:#fff;
+            border:1px solid #ecdcc2;color:#6b6053;border-radius:99px;padding:6px 13px;font-variant-numeric:tabular-nums}
+  .chip-btn:hover{background:#fff3dd}
+  .chip-btn.on{background:var(--ink);color:#fffdf7;border-color:var(--ink);font-weight:700}
+  .modes{display:grid;gap:11px;margin-top:20px}
+  .mode{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+    font-family:var(--font);font-size:16px;font-weight:700;color:var(--chalk);
+    background:var(--slate-700);border:1px solid var(--slate-600);border-radius:12px;padding:14px 16px;
+    transition:transform .12s ease,filter .12s ease;
+  }
+  .mode .sym{font-size:20px;background:var(--slate-900);border-radius:9px;width:44px;height:44px;display:grid;place-items:center;flex:none;color:var(--slate-200)}
+  .mode small{display:block;font-weight:400;font-size:12.5px;color:var(--slate-300);margin-top:2px}
+  .mode:hover{transform:translateY(-2px);filter:brightness(1.06)}
+  .mode:active{transform:translateY(1px)}
+  body.bright .mode{color:#20302f;border:none}
+  body.bright .mode small{color:rgba(30,40,40,.72)}
+  body.bright .mode .sym{background:rgba(255,255,255,.6);color:#20302f}
+  body.bright .mode[data-mode=both]{background:var(--coral);box-shadow:0 5px 0 #e8735f}
+  body.bright .mode[data-mode=mult]{background:var(--mint);box-shadow:0 5px 0 #45bdb3}
+  body.bright .mode[data-mode=div]{background:var(--sky);box-shadow:0 5px 0 #559ed2}
+  .mode:focus-visible,.key:focus-visible,.btn:focus-visible,.mute:focus-visible{outline:2px solid #ff7d6b;outline-offset:2px}
+
+  /* ---------- quiz ---------- */
+  .bar{display:flex;justify-content:space-between;font-size:12.5px;color:var(--slate-300);margin-bottom:12px;letter-spacing:.04em}
+  .board{background:var(--slate-900);border:1px solid var(--slate-700);border-radius:12px;padding:26px 12px;text-align:center}
+  .eq{font-size:clamp(30px,9vw,44px);font-weight:700;font-variant-numeric:tabular-nums;color:#fff;
+      display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;min-height:56px}
+  .slot{min-width:78px;padding:2px 10px;border-bottom:4px solid #848c92;display:inline-block;color:#fff}
+  .slot.empty{color:#868e94}
+  .board.right{border-color:var(--go)}
+  .board.wrong{border-color:var(--stop)}
+  .verdict{font-size:14px;font-weight:600;margin-top:12px;min-height:20px}
+  .verdict.right{color:var(--go)}
+  .verdict.wrong{color:var(--stop)}
+  .track{height:9px;background:var(--slate-700);border-radius:99px;margin:14px 0 16px;overflow:hidden}
+  .fill{height:100%;width:100%;background:var(--slate-200);border-radius:99px}
+  .fill.mid{background:var(--warn)}
+  .fill.low{background:var(--stop)}
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .key{
+    font-family:var(--font);font-size:22px;font-weight:600;color:var(--chalk);
+    background:var(--slate-700);border:1px solid var(--slate-600);border-radius:10px;padding:16px 0;cursor:pointer;
+  }
+  .key:hover{background:var(--slate-600)}
+  .key:active{background:var(--slate-500)}
+
+  /* ---------- results & progress ---------- */
+  .stamp{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#a7aeb4;margin:0 0 14px}
+  body.bright .stamp{color:#9b8f80}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+  .stat{background:var(--slate-900);border:1px solid var(--slate-700);border-radius:11px;padding:13px 14px}
+  .stat b{display:block;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+  .stat span{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate-300)}
+  body.bright .stat{background:#fff7e9;border-color:#f2e4cb}
+  body.bright .stat span{color:#8a7f70}
+
+  .callout{border-radius:11px;padding:14px 16px;margin-top:4px;font-size:14px;line-height:1.55;
+           background:rgba(224,100,95,.1);border:1px solid rgba(224,100,95,.5)}
+  .callout h3{margin:0 0 7px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--stop)}
+  .callout ul{margin:0;padding-left:18px;line-height:1.7}
+  .callout.good{background:rgba(130,194,107,.1);border-color:rgba(130,194,107,.5)}
+  .callout.good h3{color:var(--go)}
+  .missed{background:var(--slate-900);border:1px solid var(--slate-700);border-radius:11px;padding:14px;font-size:14px;margin-top:12px}
+  .missed h3{margin:0 0 9px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate-300);font-weight:600}
+  .missed ul{margin:0;padding-left:18px;color:var(--slate-200);line-height:1.7;font-variant-numeric:tabular-nums}
+  body.bright .missed{background:#fff7e9;border-color:#f2e4cb}
+  body.bright .missed ul{color:#5c5348}
+  body.bright .missed h3{color:#8a7f70}
+
+  .btn{display:block;width:100%;margin-top:12px;font-family:var(--font);font-size:16px;font-weight:600;
+       background:var(--chalk);color:var(--ink);border:none;border-radius:11px;padding:14px;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--slate-200);border:1px solid var(--slate-600)}
+  body.bright .btn{background:var(--ink);color:#fffdf7}
+  body.bright .btn.ghost{background:transparent;color:var(--ink);border:1px solid #e0cfb4}
+  .prize{border:1px dashed var(--warn);border-radius:11px;padding:14px 16px;margin-top:12px;
+         background:rgba(230,180,85,.08);font-size:14px;line-height:1.55;color:var(--slate-200)}
+  .prize b{color:var(--warn)}
+  body.bright .prize{color:#5c5348}
+
+  /* progress screen bits */
+  .periods{display:grid;gap:8px;margin:16px 0}
+  .period{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:6px;align-items:center;
+          background:#fff7e9;border:1px solid #f2e4cb;border-radius:10px;padding:11px 13px;font-size:14px}
+  .period .lab{font-weight:700}
+  .period i{font-style:normal;font-variant-numeric:tabular-nums}
+  .period.head{background:transparent;border:none;padding:0 13px;font-size:11px;letter-spacing:.1em;
+               text-transform:uppercase;color:#8a7f70}
+  .chart{background:#fff7e9;border:1px solid #f2e4cb;border-radius:11px;padding:14px;margin-bottom:12px}
+  .chart h3,.facts h3{margin:0 0 10px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8a7f70;font-weight:600}
+  .facts{background:#fff7e9;border:1px solid #f2e4cb;border-radius:11px;padding:14px;font-size:14px;margin-bottom:12px}
+  .chip{display:inline-block;background:#fff;border:1px solid #f0dfc4;border-radius:99px;
+        padding:5px 11px;margin:0 6px 6px 0;font-variant-numeric:tabular-nums}
+  .chip b{color:#d9534f}
+  .log{font-size:13.5px;line-height:1.9;font-variant-numeric:tabular-nums;margin:0;padding:0;list-style:none}
+  .log li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed #f0dfc4;padding:3px 0}
+  .log li:last-child{border:none}
+  .log .dt{color:#8a7f70}
+  .empty{color:#8a7f70;font-size:14px;line-height:1.6}
+
+  /* ---------- dancing cat ---------- */
+  .stage{background:var(--slate-900);border:1px solid var(--slate-700);border-radius:12px;padding:8px 0 0;text-align:center;overflow:hidden;margin:0}
+  .stage figcaption{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#98a0a6;padding:0 0 10px}
+  #cat{width:190px;height:180px;display:block;margin:0 auto}
+  .cat-all{animation:bop .5s infinite ease-in-out;transform-box:fill-box;transform-origin:50% 100%}
+  .head{animation:head .5s infinite ease-in-out;transform-box:fill-box;transform-origin:50% 100%}
+  .armL{animation:armL .5s infinite ease-in-out;transform-box:fill-box;transform-origin:80% 10%}
+  .armR{animation:armR .5s infinite ease-in-out;transform-box:fill-box;transform-origin:20% 10%}
+  .tail{animation:tail .5s infinite ease-in-out;transform-box:fill-box;transform-origin:0% 100%}
+  .note{animation:float 2.2s infinite linear;opacity:0}
+  .note.b{animation-delay:.7s}
+  .note.c{animation-delay:1.4s}
+  @keyframes bop{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+  @keyframes head{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-4deg)}}
+  @keyframes armL{0%,100%{transform:rotate(18deg)}50%{transform:rotate(-42deg)}}
+  @keyframes armR{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(42deg)}}
+  @keyframes tail{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(22deg)}}
+  @keyframes float{0%{opacity:0;transform:translate(0,0) rotate(0)}15%{opacity:.9}100%{opacity:0;transform:translate(16px,-46px) rotate(22deg)}}
+  .burst{position:fixed;inset:0;z-index:30;display:grid;place-items:center;
+         background:rgba(22,24,26,.92);overflow:hidden;animation:fade .25s ease both}
+  .burst h2{margin:0;font-size:clamp(58px,21vw,124px);font-weight:800;color:#fff;line-height:1;
+            animation:pop .55s cubic-bezier(.2,1.5,.4,1) both}
+  .burst p{margin:10px 0 0;font-size:14px;letter-spacing:.2em;text-transform:uppercase;
+           color:#ffd166;animation:pop .55s .18s cubic-bezier(.2,1.5,.4,1) both}
+  .spark{position:absolute;left:50%;top:50%;width:13px;height:17px;border-radius:2px;
+         animation:fly 1.4s cubic-bezier(.08,.7,.25,1) forwards}
+  @keyframes fly{
+    0%{transform:translate(-50%,-50%) scale(.6) rotate(0);opacity:1}
+    18%{transform:translate(calc(-50% + var(--dx)*.25),calc(-50% + var(--dy)*.25)) scale(1) rotate(90deg);opacity:1}
+    72%{opacity:1}
+    100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.9) rotate(var(--rot));opacity:0}}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}65%{transform:scale(1.09);opacity:1}100%{transform:scale(1);opacity:1}}
+  .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+  .bit{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;animation:drop linear forwards}
+  @keyframes drop{to{transform:translateY(105vh) rotate(720deg)}}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition:none !important}}
+</style>
+</head>
+<body class="bright">
+<div class="app">
+
+  <div class="logo">
+    <div class="mark">MATH</div>
+    <div class="ops"><span>×</span><span>÷</span><span>1</span><span>12</span></div>
+    <button class="mute" id="mute" aria-label="Turn background music off" title="Background music"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" fill="currentColor"/><circle cx="17" cy="16" r="3" fill="currentColor"/></svg></button>
+  </div>
+
+  <!-- ============ START ============ -->
+  <section class="screen on panel" id="start">
+    <h1>Times tables, 1 to 12</h1>
+    <p class="sub">Beat the clock on each question. Your scores are saved so you can watch yourself get faster.</p>
+
+    <label for="name">What's your name?</label>
+    <input type="text" id="name" list="names" placeholder="Type your name" autocomplete="off"
+           autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="20">
+    <datalist id="names"></datalist>
+
+    <div class="setup">
+      <span id="setupLbl">15 questions &middot; 6.0s each</span>
+      <button class="edit" id="editBtn">Edit</button>
+    </div>
+    <div class="tuner" id="tuner">
+      <label for="secs">Seconds per question</label>
+      <div class="tune-row">
+        <input type="range" id="secs" min="2" max="20" step="0.5" value="6" aria-describedby="secsVal">
+        <b id="secsVal">6.0s</b>
+      </div>
+      <div class="chips" id="secChips">
+        <button class="chip-btn" data-v="3">3s</button>
+        <button class="chip-btn" data-v="4">4s</button>
+        <button class="chip-btn" data-v="5">5s</button>
+        <button class="chip-btn" data-v="6">6s</button>
+        <button class="chip-btn" data-v="8">8s</button>
+        <button class="chip-btn" data-v="10">10s</button>
+        <button class="chip-btn" data-v="15">15s</button>
+      </div>
+
+      <label for="qty" style="margin-top:16px">Questions per test</label>
+      <div class="tune-row">
+        <input type="range" id="qty" min="5" max="40" step="1" value="15" aria-describedby="qtyVal">
+        <b id="qtyVal">15</b>
+      </div>
+      <div class="chips" id="qtyChips">
+        <button class="chip-btn" data-v="10">10</button>
+        <button class="chip-btn" data-v="15">15</button>
+        <button class="chip-btn" data-v="20">20</button>
+        <button class="chip-btn" data-v="25">25</button>
+        <button class="chip-btn" data-v="30">30</button>
+      </div>
+    </div>
+
+    <div class="setup">
+      <span id="trackLbl">♪ Built-in loop</span>
+      <span style="display:flex;gap:6px">
+        <button class="edit" id="musicBtn">Change</button>
+        <button class="edit" id="musicReset" title="Back to the built-in loop">Default</button>
+      </span>
+    </div>
+    <input type="file" id="musicFile" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.flac" style="display:none">
+    <p class="hint" id="iosHint" style="display:none">On iPhone, the ring/silent switch must be off to hear music.</p>
+
+    <div class="modes">
+      <button class="mode" data-mode="both"><span class="sym">×÷</span><span>Multiplication and division<small>Mixed, in random order</small></span></button>
+      <button class="mode" data-mode="mult"><span class="sym">×</span><span>Multiplication only<small>2 × 2 = ? and 2 × ? = 4</small></span></button>
+      <button class="mode" data-mode="div"><span class="sym">÷</span><span>Division only<small>4 ÷ 2 = ? and 4 ÷ ? = 2</small></span></button>
+    </div>
+
+    <button class="btn ghost" id="toProgress">See progress</button>
+    <p class="hint" id="rights" style="text-align:center;margin-top:14px">© 2026 LIFTC</p>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="screen panel" id="quiz">
+    <div class="bar"><span id="progressLbl">Question 1 of 20</span><span id="clock">6.0s</span></div>
+    <div class="board" id="board">
+      <div class="eq" id="eq"></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="pad" id="pad">
+      <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button>
+      <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button>
+      <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button>
+      <button class="key" data-k="del" aria-label="Delete"><svg viewBox="0 0 24 16" width="26" height="17" aria-hidden="true"><path d="M8 1h13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8L1 8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 5.5l6 5M18 5.5l-6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button class="key" data-k="0">0</button>
+      <button class="key" data-k="go" style="font-size:15px;letter-spacing:.08em">ENTER</button>
+      <p class="hint" id="padHint" style="display:none">Your number keys, Backspace and Enter work too.</p>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen panel" id="done">
+    <h1 id="headline">Nice work</h1>
+    <p class="stamp" id="stamp"></p>
+    <p class="sub" id="subline"></p>
+
+    <figure class="stage">
+      <svg id="cat" viewBox="0 0 220 200" role="img" aria-label="A cat dancing">
+        <g class="cat-all">
+          <path class="tail" d="M158 148 C 196 148 200 112 182 96" fill="none" stroke="#a9b0b6" stroke-width="11" stroke-linecap="round"/>
+          <ellipse cx="110" cy="150" rx="42" ry="40" fill="#cdd3d8"/>
+          <ellipse cx="90" cy="186" rx="15" ry="9" fill="#a9b0b6"/>
+          <ellipse cx="130" cy="186" rx="15" ry="9" fill="#a9b0b6"/>
+          <rect class="armL" x="58" y="126" width="14" height="44" rx="7" fill="#cdd3d8"/>
+          <rect class="armR" x="148" y="126" width="14" height="44" rx="7" fill="#cdd3d8"/>
+          <g class="head">
+            <path d="M80 74 L68 26 L112 52 Z" fill="#cdd3d8"/>
+            <path d="M140 74 L152 26 L108 52 Z" fill="#cdd3d8"/>
+            <path d="M85 66 L77 38 L104 54 Z" fill="#8f9297"/>
+            <path d="M135 66 L143 38 L116 54 Z" fill="#8f9297"/>
+            <circle cx="110" cy="92" r="42" fill="#eef1f3"/>
+            <circle cx="95" cy="88" r="5.5" fill="#232629"/>
+            <circle cx="125" cy="88" r="5.5" fill="#232629"/>
+            <path d="M104 104 L116 104 L110 111 Z" fill="#6b7278"/>
+            <path d="M110 111 q -7 8 -13 2 M110 111 q 7 8 13 2" fill="none" stroke="#6b7278" stroke-width="3" stroke-linecap="round"/>
+            <path d="M70 96 H52 M70 104 H54 M150 96 H168 M150 104 H166" stroke="#a9b0b6" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+        </g>
+        <g fill="#6b7278">
+          <path class="note a" d="M34 150 h3 v-16 l8 3 v3 l-8 -3 v13 a4 4 0 1 1 -3 -3 z"/>
+          <path class="note b" d="M180 140 h3 v-16 l8 3 v3 l-8 -3 v13 a4 4 0 1 1 -3 -3 z"/>
+          <path class="note c" d="M26 108 h3 v-16 l8 3 v3 l-8 -3 v13 a4 4 0 1 1 -3 -3 z"/>
+        </g>
+      </svg>
+      <figcaption id="catcap">dancing cat</figcaption>
+    </figure>
+
+    <div class="stats">
+      <div class="stat"><b id="sAcc">0%</b><span>Accuracy</span></div>
+      <div class="stat"><b id="sScore">0/20</b><span>Correct</span></div>
+      <div class="stat"><b id="sTotal">0.0s</b><span>Total time</span></div>
+      <div class="stat"><b id="sAvg">0.0s</b><span>Average per question</span></div>
+    </div>
+
+    <div id="patternBox"></div>
+    <div id="prizeBox"></div>
+    <div id="missBox"></div>
+
+    <button class="btn" id="again">Play again</button>
+    <button class="btn ghost" id="seeProgress">See progress</button>
+    <button class="btn ghost" id="home">Change mode or name</button>
+  </section>
+
+  <!-- ============ PROGRESS ============ -->
+  <section class="screen panel" id="progress">
+    <h1 id="whoTitle">Progress</h1>
+    <p class="sub" id="whoSub"></p>
+    <div id="pickerBox" style="margin-bottom:16px"></div>
+    <div id="progBody"></div>
+    <button class="btn" id="backHome">Back to start</button>
+    <button class="btn ghost" id="clearHist">Clear this student's history</button>
+  </section>
+</div>
+
+<audio id="bgm" preload="none" src="./music.m4a"></audio>
+
+<script>
+(function(){
+  "use strict";
+
+  const KEY = "mathapp:v1";
+  // Adjustable from the start page; stored with the rest of the data.
+  let CFG = {limit:6000, total:15};
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  /* ================= storage =================
+     Tries the artifact store, then localStorage, then falls back to
+     memory-only so the app still runs wherever it's opened. */
+  let DB = {students:{}, last:""}, memoryOnly = false;
+
+  async function dbLoad(){
+    try{
+      if(window.storage && window.storage.get){
+        const r = await window.storage.get(KEY);
+        if(r && r.value) return JSON.parse(r.value);
+        return {students:{}, last:""};
+      }
+    }catch(e){ /* key missing or store unavailable */ }
+    try{
+      const s = localStorage.getItem(KEY);
+      if(s) return JSON.parse(s);
+      localStorage.setItem(KEY + ":probe", "1");
+      localStorage.removeItem(KEY + ":probe");
+      return {students:{}, last:""};
+    }catch(e){ memoryOnly = true; }
+    return {students:{}, last:""};
+  }
+  async function dbSave(){
+    DB.cfg = CFG;
+    const s = JSON.stringify(DB);
+    try{ if(window.storage && window.storage.set){ await window.storage.set(KEY, s); return; } }catch(e){}
+    try{ localStorage.setItem(KEY, s); }catch(e){ memoryOnly = true; }
+  }
+
+  const keyOf = n => (n || "").trim().toLowerCase() || "guest";
+
+  /* ================= audio =================
+     Playback runs through the Web Audio API rather than <audio> elements.
+     Phone browsers unlock audio per element on tap, so a second element
+     that was never tapped goes silent partway through a test. One audio
+     context, unlocked once, keeps playing — and it lets the person load
+     a track of their own. */
+  const BASE_VOL = .12;
+  let actx = null, master = null, srcNode = null, tune = null;
+  let musicOn = true, playing = false, loopIn = 0, loopOut = 0, customName = "";
+
+  function ac(){
+    if(!actx){
+      const C = window.AudioContext || window.webkitAudioContext;
+      if(!C) return null;
+      actx = new C();
+      master = actx.createGain();
+      master.gain.value = 0;
+      master.connect(actx.destination);
+    }
+    if(actx.state === "suspended") actx.resume();
+    return actx;
+  }
+
+  function decode(arrbuf, builtin){
+    const a = ac();
+    if(!a) return Promise.resolve(false);
+    return new Promise(res => {
+      const ok = buf => {
+        tune = buf;
+        // The built-in clip is one bar-aligned loop; skip the encoder's padding.
+        if(builtin && buf.duration > 12.3){ loopIn = .066; loopOut = .066 + 12.24; }
+        else { loopIn = 0; loopOut = buf.duration; }
+        res(true);
+      };
+      try{
+        const p = a.decodeAudioData(arrbuf, ok, () => res(false));
+        if(p && p.then) p.then(ok, () => res(false));
+      }catch(e){ res(false); }
+    });
+  }
+  async function loadBuiltin(){
+    try{
+      const r = await fetch($("bgm").getAttribute("src"));
+      return await decode(await r.arrayBuffer(), true);
+    }catch(e){ return false; }
+  }
+  function ramp(to, sec){
+    if(!master || !actx) return;
+    const t = actx.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setValueAtTime(master.gain.value, t);
+    master.gain.linearRampToValueAtTime(to, t + sec);
+  }
+  function killSource(node, delay){
+    if(!node) return;
+    setTimeout(() => {
+      try{ node.stop(); }catch(e){}
+      try{ node.disconnect(); }catch(e){}
+    }, delay);
+  }
+  // A tap does not survive an async callback: by the time a fetch+decode
+  // finishes, Safari may consider the gesture expired. So the clip is decoded
+  // up front and the tap only has to resume and start it.
+  async function musicStart(){
+    if(!musicOn || playing) return;
+    const a = ac();
+    if(!a) return;
+    if(!tune){
+      const ok = await loadBuiltin();
+      if(!ok) return;
+    }
+    if(playing) return;
+    playing = true;
+    killSource(srcNode, 0);
+    srcNode = a.createBufferSource();
+    srcNode.buffer = tune;
+    srcNode.loop = true;
+    srcNode.loopStart = loopIn;
+    srcNode.loopEnd = loopOut;
+    srcNode.connect(master);
+    try{ srcNode.start(0, loopIn); }catch(e){ srcNode.start(0); }
+    master.gain.setValueAtTime(0, a.currentTime);
+    ramp(BASE_VOL, .9);
+    // Silent failure reads as a broken product; say so and let the next tap try.
+    setTimeout(() => {
+      if(playing && actx && actx.state !== "running") setTrackLbl("Tap anywhere to start the music");
+      else if(playing) setTrackLbl();
+    }, 400);
+  }
+  function musicStop(){
+    if(!playing) return;
+    playing = false;
+    ramp(0, .5);
+    const node = srcNode;
+    srcNode = null;
+    killSource(node, 600);
+  }
+  function duck(){
+    if(!playing) return;
+    ramp(.03, .12);
+    setTimeout(() => { if(playing) ramp(BASE_VOL, .7); }, 1500);
+  }
+  $("mute").addEventListener("click", () => {
+    musicOn = !musicOn;
+    const b = $("mute");
+    b.classList.toggle("off", !musicOn);
+    b.setAttribute("aria-label", musicOn ? "Turn background music off" : "Turn background music on");
+    if(!musicOn) musicStop();
+    else if(!$("done").classList.contains("on")) musicStart();
+  });
+  // Browsers block audio until the page is touched, so retry on first interaction.
+  ["pointerdown","keydown"].forEach(ev => document.addEventListener(ev, () => {
+    if(!playing && musicOn && !$("done").classList.contains("on")) musicStart();
+  }));
+  // Coming back from a locked screen or another app leaves the context asleep.
+  document.addEventListener("visibilitychange", () => {
+    if(!document.hidden && actx && actx.state === "suspended") actx.resume();
+  });
+
+  /* ---------- the person's own music, kept for next time ---------- */
+  function idbOpen(){
+    if(!window.indexedDB) return Promise.reject(new Error("no indexedDB"));
+    return new Promise((res, rej) => {
+      const r = indexedDB.open("mathapp", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("media");
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  function idbDo(mode, fn){
+    return idbOpen().then(db => new Promise((res, rej) => {
+      const t = db.transaction("media", mode), s = t.objectStore("media");
+      const out = fn(s);
+      t.oncomplete = () => res(out && out.result !== undefined ? out.result : true);
+      t.onerror = () => rej(t.error);
+    }));
+  }
+  const trackSave = rec => idbDo("readwrite", s => s.put(rec, "track"));
+  const trackLoad = () => idbDo("readonly", s => s.get("track"));
+  const trackWipe = () => idbDo("readwrite", s => s.delete("track"));
+
+  function setTrackLbl(msg){
+    $("trackLbl").textContent = msg || ("Music: " + (customName || "Built-in loop"));
+  }
+  // Safari only gained File.arrayBuffer() in 14, so fall back to FileReader.
+  function fileBytes(f){
+    if(f.arrayBuffer) return f.arrayBuffer();
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = () => rej(r.error);
+      r.readAsArrayBuffer(f);
+    });
+  }
+  $("musicBtn").addEventListener("click", () => $("musicFile").click());
+  $("musicFile").addEventListener("change", async e => {
+    const f = e.target.files && e.target.files[0];
+    if(!f) return;
+    setTrackLbl("Loading \u2026");
+    try{
+      const buf = await fileBytes(f);
+      musicStop();
+      const ok = await decode(buf, false);
+      if(!ok){
+        // Purchased/streamed tracks are DRM-locked and unreadable by a file input.
+        setTrackLbl("Couldn't read that file. Apple Music and Spotify tracks are copy-protected \u2014 use an MP3, M4A or WAV saved in Files.");
+        setTimeout(() => setTrackLbl(), 6000);
+        await loadBuiltin();
+        return;
+      }
+      customName = f.name.replace(/\.[^.]+$/, "");
+      try{ await trackSave({blob:f, name:customName}); }
+      catch(err){ setTrackLbl("Music: " + customName + " (this session only)"); }
+      setTrackLbl();
+      playing = false;
+      musicStart();
+    }catch(err){
+      setTrackLbl("Couldn't load that file \u2014 try an MP3, M4A or WAV.");
+      setTimeout(() => setTrackLbl(), 5000);
+    }
+    e.target.value = "";
+  });
+  $("musicReset").addEventListener("click", async () => {
+    if(!customName) return;
+    customName = "";
+    try{ await trackWipe(); }catch(e){}
+    musicStop();
+    tune = null;
+    setTrackLbl();
+    setTimeout(() => { playing = false; musicStart(); }, 650);
+  });
+
+  /* ================= sound effects ================= */
+  function sadViolin(){
+    duck();
+    const a = ac(); if(!a) return;
+    const t = a.currentTime, out = a.createGain();
+    out.gain.setValueAtTime(0, t);
+    out.gain.linearRampToValueAtTime(.22, t + .12);
+    out.gain.setValueAtTime(.22, t + 1.0);
+    out.gain.exponentialRampToValueAtTime(.0001, t + 1.7);
+    const lp = a.createBiquadFilter();
+    lp.type = "lowpass"; lp.Q.value = 3;
+    lp.frequency.setValueAtTime(2200, t);
+    lp.frequency.exponentialRampToValueAtTime(700, t + 1.7);
+    lp.connect(out); out.connect(a.destination);
+    const vib = a.createOscillator(), vibAmt = a.createGain();
+    vib.frequency.value = 5.5; vibAmt.gain.value = 7;
+    vib.connect(vibAmt); vib.start(t); vib.stop(t + 1.8);
+    [0, 3].forEach(det => {
+      const o = a.createOscillator();
+      o.type = "sawtooth"; o.detune.value = det;
+      o.frequency.setValueAtTime(392, t);
+      o.frequency.setValueAtTime(392, t + .25);
+      o.frequency.exponentialRampToValueAtTime(349.2, t + .5);
+      o.frequency.exponentialRampToValueAtTime(311.1, t + .85);
+      o.frequency.exponentialRampToValueAtTime(196, t + 1.6);
+      vibAmt.connect(o.frequency);
+      o.connect(lp); o.start(t); o.stop(t + 1.75);
+    });
+  }
+  function ding(){
+    const a = ac(); if(!a) return;
+    const t = a.currentTime, g = a.createGain(), o = a.createOscillator();
+    o.type = "triangle";
+    o.frequency.setValueAtTime(880, t);
+    o.frequency.setValueAtTime(1318.5, t + .09);
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(.18, t + .02);
+    g.gain.exponentialRampToValueAtTime(.0001, t + .34);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + .36);
+  }
+  function fanfare(){
+    const a = ac(); if(!a) return;
+    [523.3, 659.3, 784, 1046.5].forEach((f, i) => {
+      const t = a.currentTime + i * .13, g = a.createGain(), o = a.createOscillator();
+      o.type = "triangle"; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t);
+      g.gain.exponentialRampToValueAtTime(.17, t + .03);
+      g.gain.exponentialRampToValueAtTime(.0001, t + .5);
+      o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + .52);
+    });
+  }
+
+  /* ================= questions ================= */
+  const rnd = n => Math.floor(Math.random() * n) + 1;
+
+  function makeQuestion(mode, lastText){
+    for(let guard = 0; guard < 40; guard++){
+      const op = mode === "both" ? (Math.random() < .5 ? "x" : "d") : (mode === "mult" ? "x" : "d");
+      const a = rnd(12), b = rnd(12), c = a * b, v = Math.floor(Math.random() * 3);
+      let text, ans;
+      if(op === "x"){
+        if(v === 0){ text = a + " \u00d7 " + b + " = ?"; ans = c; }
+        else if(v === 1){ text = a + " \u00d7 ? = " + c; ans = b; }
+        else { text = "? \u00d7 " + b + " = " + c; ans = a; }
+      }else{
+        if(v === 0){ text = c + " \u00f7 " + b + " = ?"; ans = a; }
+        else if(v === 1){ text = c + " \u00f7 ? = " + a; ans = b; }
+        else { text = "? \u00f7 " + b + " = " + a; ans = c; }
+      }
+      if(text !== lastText) return {text:text, ans:ans, op:op, a:a, b:b};
+    }
+    return {text:"6 \u00d7 7 = ?", ans:42, op:"x", a:6, b:7};
+  }
+
+  // One canonical id per fact, so 3x8 and 8x3 count as the same weak spot.
+  function factId(op, a, b){
+    const lo = Math.min(a, b), hi = Math.max(a, b);
+    return op + ":" + lo + ":" + hi;
+  }
+  function factLabel(id){
+    const p = id.split(":"), lo = +p[1], hi = +p[2];
+    return p[0] === "x" ? lo + " \u00d7 " + hi : (lo * hi) + " \u00f7 " + hi;
+  }
+
+  /* ================= state ================= */
+  let S = null, raf = 0, locked = false;
+
+  function show(id){
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+    $(id).classList.add("on");
+    document.body.classList.toggle("bright", id === "start" || id === "progress");
+    if(id === "done") musicStop(); else musicStart();
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll(".mode").forEach(btn => {
+    btn.addEventListener("click", () => {
+      ac();
+      S = { name:($("name").value || "").trim(), mode:btn.dataset.mode, i:0, correct:0,
+            typed:"", times:[], recs:[], last:"", started:0 };
+      show("quiz");
+      nextQuestion();
+    });
+  });
+
+  function nextQuestion(){
+    if(S.i >= CFG.total){ finish(); return; }
+    S.q = makeQuestion(S.mode, S.last);
+    S.last = S.q.text; S.typed = ""; locked = false;
+    $("progressLbl").textContent = "Question " + (S.i + 1) + " of " + CFG.total;
+    $("board").className = "board";
+    $("verdict").textContent = "";
+    $("verdict").className = "verdict";
+    draw();
+    S.started = performance.now();
+    tick();
+  }
+  function draw(){
+    const parts = S.q.text.split("?"), eq = $("eq");
+    eq.innerHTML = "";
+    eq.appendChild(document.createTextNode(parts[0]));
+    const slot = document.createElement("span");
+    slot.className = "slot" + (S.typed ? "" : " empty");
+    slot.textContent = S.typed || "?";
+    eq.appendChild(slot);
+    eq.appendChild(document.createTextNode(parts[1] || ""));
+  }
+  function tick(){
+    const left = CFG.limit - (performance.now() - S.started), pct = Math.max(0, left / CFG.limit), fill = $("fill");
+    fill.style.width = (pct * 100) + "%";
+    fill.className = "fill" + (pct < .25 ? " low" : pct < .55 ? " mid" : "");
+    $("clock").textContent = Math.max(0, left / 1000).toFixed(1) + "s";
+    if(left <= 0){ timeUp(); return; }
+    raf = requestAnimationFrame(tick);
+  }
+  const stopClock = () => cancelAnimationFrame(raf);
+
+  function press(k){
+    if(locked) return;
+    if(k === "del") S.typed = S.typed.slice(0, -1);
+    else if(k === "go"){ if(S.typed !== "") submit(); return; }
+    else if(S.typed.length < 3) S.typed += k;
+    draw();
+  }
+  $("pad").addEventListener("click", e => {
+    const b = e.target.closest(".key");
+    if(b) press(b.dataset.k);
+  });
+  document.addEventListener("keydown", e => {
+    if(!$("quiz").classList.contains("on")) return;
+    if(e.key >= "0" && e.key <= "9") press(e.key);
+    else if(e.key === "Backspace"){ e.preventDefault(); press("del"); }
+    else if(e.key === "Enter"){ e.preventDefault(); press("go"); }
+  });
+
+  function record(ok, sec, timedOut){
+    S.recs.push({ op:S.q.op, a:S.q.a, b:S.q.b, ok:ok, sec:sec,
+                  out:!!timedOut, text:S.q.text, ans:S.q.ans });
+    S.times.push(sec);
+    S.i++;
+  }
+  function submit(){
+    stopClock(); locked = true;
+    const sec = Math.min(CFG.limit, performance.now() - S.started) / 1000;
+    const ok = parseInt(S.typed, 10) === S.q.ans;
+    if(ok){
+      S.correct++;
+      $("board").className = "board right";
+      $("verdict").className = "verdict right";
+      $("verdict").textContent = "Correct \u2014 " + sec.toFixed(1) + "s";
+      ding();
+    }else{
+      $("board").className = "board wrong";
+      $("verdict").className = "verdict wrong";
+      $("verdict").textContent = "Not quite \u2014 the answer is " + S.q.ans;
+      sadViolin();
+    }
+    record(ok, sec, false);
+    setTimeout(nextQuestion, ok ? 700 : 1400);
+  }
+  function timeUp(){
+    stopClock(); locked = true;
+    $("board").className = "board wrong";
+    $("verdict").className = "verdict wrong";
+    $("verdict").textContent = "Out of time \u2014 the answer is " + S.q.ans;
+    sadViolin();
+    record(false, CFG.limit / 1000, true);
+    setTimeout(nextQuestion, 1400);
+  }
+
+  /* ================= weakness analysis ================= */
+  function findPatterns(recs){
+    const misses = recs.filter(r => !r.ok), out = [];
+    if(misses.length){
+      // Which times-table family shows up across the misses?
+      const fam = {};
+      misses.forEach(r => {
+        const set = r.a === r.b ? [r.a] : [r.a, r.b];
+        set.forEach(f => { if(f > 1) fam[f] = (fam[f] || 0) + 1; });
+      });
+      const top = Object.keys(fam).map(Number).sort((x, y) => fam[y] - fam[x])[0];
+      if(top && fam[top] >= 3 && fam[top] / misses.length >= .4){
+        out.push("The <b>" + top + " times table</b> is the sore spot \u2014 " + fam[top] +
+                 " of your " + misses.length + " misses involved " + top + ".");
+      }
+      // Is one operation dragging things down?
+      const ops = {x:0, d:0};
+      misses.forEach(r => ops[r.op]++);
+      const both = recs.some(r => r.op === "x") && recs.some(r => r.op === "d");
+      if(both && misses.length >= 4){
+        if(ops.d >= misses.length * .75) out.push("<b>Division</b> is the weaker side \u2014 " + ops.d + " of " + misses.length + " misses were division.");
+        else if(ops.x >= misses.length * .75) out.push("<b>Multiplication</b> is the weaker side \u2014 " + ops.x + " of " + misses.length + " misses were multiplication.");
+      }
+      // Missing the same fact more than once is worth its own line.
+      const facts = {};
+      misses.forEach(r => { const id = factId(r.op, r.a, r.b); facts[id] = (facts[id] || 0) + 1; });
+      const rep = Object.keys(facts).filter(k => facts[k] > 1);
+      if(rep.length) out.push("Missed twice in one test: <b>" + rep.map(factLabel).join(", ") + "</b>.");
+      // Blanks vs wrong answers.
+      const outs = misses.filter(r => r.out).length;
+      if(outs >= 4 && outs >= misses.length * .6){
+        out.push("Most misses were <b>the clock running out</b> (" + outs + "), not wrong answers \u2014 these facts need to come from memory rather than counting.");
+      }
+    }
+    // Correct, but only just in time. Scales with whatever the timer is set to.
+    const cut = Math.max(1.5, CFG.limit / 1000 * .75);
+    const slow = recs.filter(r => r.ok && r.sec > cut);
+    if(slow.length >= 3){
+      const seen = [];
+      slow.forEach(r => {
+        const l = factLabel(factId(r.op, r.a, r.b));
+        if(seen.indexOf(l) < 0) seen.push(l);
+      });
+      out.push("Right but slow (over " + cut.toFixed(1) + "s): <b>" + seen.slice(0, 3).join(", ") +
+               (seen.length > 3 ? " and " + (seen.length - 3) + " more" : "") + "</b>.");
+    }
+    return out.slice(0, 3);
+  }
+
+  /* ================= results ================= */
+  async function finish(){
+    stopClock();
+
+    const total = S.times.reduce((a, b) => a + b, 0);
+    const acc = Math.round(S.correct / CFG.total * 100);
+    const who = S.name || "You";
+    const when = new Date();
+
+    $("sAcc").textContent = acc + "%";
+    $("sScore").textContent = S.correct + "/" + CFG.total;
+    $("sTotal").textContent = total.toFixed(1) + "s";
+    $("sAvg").textContent = (total / CFG.total).toFixed(1) + "s";
+    $("stamp").textContent = when.toLocaleDateString(undefined, {weekday:"long", month:"long", day:"numeric", year:"numeric"}) +
+                             " \u00b7 " + when.toLocaleTimeString(undefined, {hour:"numeric", minute:"2-digit"});
+    $("headline").textContent = acc === 100 ? who + ", that was perfect" : acc >= 70 ? "Solid round, " + who : "Good effort, " + who;
+    $("subline").textContent = "You answered " + S.correct + " of " + CFG.total + " correctly in " +
+                               total.toFixed(1) + " seconds, averaging " + (total / CFG.total).toFixed(1) + " seconds a question.";
+    $("catcap").textContent = acc === 100 ? "the cat is very impressed" : "the cat danced anyway";
+
+    const pats = findPatterns(S.recs);
+    $("patternBox").innerHTML = pats.length
+      ? '<div class="callout"><h3>Pattern spotted</h3><ul><li>' + pats.join("</li><li>") + "</li></ul></div>"
+      : (acc === 100 ? '<div class="callout good"><h3>Pattern spotted</h3>No weak spots in this one \u2014 every fact came back correctly and on time.</div>' : "");
+
+    $("prizeBox").innerHTML = acc === 100
+      ? '<div class="prize"><b>Perfect score unlocked.</b><br>Show this screen to whoever promised you $2 and a $100 Uniqlo gift card \u2014 that part is on them, not the app.</div>'
+      : "";
+
+    const misses = S.recs.filter(r => !r.ok);
+    $("missBox").innerHTML = misses.length
+      ? '<div class="missed"><h3>Worth another look</h3><ul>' + misses.map(r =>
+          "<li>" + r.text.replace("?", "__") + " \u2192 " + r.ans + (r.out ? " (ran out of time)" : "") + "</li>").join("") + "</ul></div>"
+      : "";
+
+    // A perfect score gets its own moment before the results page.
+    if(acc === 100){
+      musicStop();
+      fanfare();
+      burst(() => { show("done"); confetti(); });
+    }else{
+      show("done");
+    }
+
+    // Save the attempt.
+    const k = keyOf(S.name);
+    if(!DB.students[k]) DB.students[k] = {name:S.name || "Guest", attempts:[]};
+    DB.students[k].name = S.name || DB.students[k].name;
+    DB.students[k].attempts.push({
+      d: when.getTime(), m: S.mode, c: S.correct, n: CFG.total, t: CFG.limit / 1000,
+      s: +total.toFixed(1),
+      w: misses.map(r => factId(r.op, r.a, r.b))
+    });
+    DB.last = k;
+    await dbSave();
+    refreshNames();
+  }
+
+  function burst(after){
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){ after(); return; }
+    const wrap = document.createElement("div");
+    wrap.className = "burst";
+    wrap.innerHTML = '<div style="text-align:center"><h2>100%</h2><p>Perfect score</p></div>';
+    document.body.appendChild(wrap);
+    const colors = ["#ffd166","#ff9e8d","#6fddd4","#7cc0f0","#ffffff","#c3a6f5"];
+    const R = Math.max(window.innerWidth, window.innerHeight) * .8;
+    function wave(n, reach, delay){
+      for(let i = 0; i < n; i++){
+        const s = document.createElement("i");
+        s.className = "spark";
+        const ang = Math.random() * Math.PI * 2, dist = reach * (.3 + Math.random() * .7);
+        s.style.setProperty("--dx", (Math.cos(ang) * dist).toFixed(0) + "px");
+        s.style.setProperty("--dy", (Math.sin(ang) * dist).toFixed(0) + "px");
+        s.style.setProperty("--rot", (Math.random() * 900 - 450).toFixed(0) + "deg");
+        s.style.background = colors[i % colors.length];
+        s.style.animationDelay = delay + "ms";
+        s.style.animationDuration = (1.1 + Math.random() * .6).toFixed(2) + "s";
+        wrap.appendChild(s);
+      }
+    }
+    wave(90, R, 0); wave(60, R * .75, 430); wave(55, R, 880);
+    setTimeout(() => { wrap.remove(); after(); }, 2700);
+  }
+
+  function confetti(){
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const wrap = document.createElement("div");
+    wrap.className = "confetti";
+    document.body.appendChild(wrap);
+    const colors = ["#ffd166", "#ff9e8d", "#6fddd4", "#7cc0f0", "#eef1f3"];
+    for(let i = 0; i < 80; i++){
+      const b = document.createElement("i");
+      b.className = "bit";
+      b.style.left = Math.random() * 100 + "%";
+      b.style.background = colors[i % colors.length];
+      b.style.animationDuration = (2 + Math.random() * 1.8) + "s";
+      b.style.animationDelay = (Math.random() * .7) + "s";
+      wrap.appendChild(b);
+    }
+    setTimeout(() => wrap.remove(), 5200);
+  }
+
+  /* ================= progress over time ================= */
+  const DAY = 864e5;
+
+  function summarize(list){
+    if(!list.length) return null;
+    const q = list.reduce((a, r) => a + r.n, 0);
+    const c = list.reduce((a, r) => a + r.c, 0);
+    const s = list.reduce((a, r) => a + r.s, 0);
+    return { tests:list.length, acc:Math.round(c / q * 100), sec:(s / q).toFixed(1) };
+  }
+  function sinceDays(list, days){
+    const cut = Date.now() - days * DAY;
+    return list.filter(r => r.d >= cut);
+  }
+  function todayOnly(list){
+    const t = new Date(); t.setHours(0, 0, 0, 0);
+    return list.filter(r => r.d >= t.getTime());
+  }
+  function periodRow(label, list){
+    const s = summarize(list);
+    return '<div class="period"><span class="lab">' + label + "</span>" +
+      (s ? "<i>" + s.tests + (s.tests === 1 ? " test" : " tests") + "</i><i>" + s.acc + "%</i><i>" + s.sec + "s</i>"
+         : '<i style="color:#a99d8d">\u2014</i><i style="color:#a99d8d">\u2014</i><i style="color:#a99d8d">\u2014</i>') +
+      "</div>";
+  }
+  function chart(list){
+    const recent = list.slice(-12);
+    if(recent.length < 2) return "";
+    const W = 480, H = 118, gap = 8, bw = (W - gap * (recent.length - 1)) / recent.length;
+    let svg = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" height="118" role="img" aria-label="Accuracy of recent tests">';
+    recent.forEach((r, i) => {
+      const acc = Math.round(r.c / r.n * 100);
+      const h = Math.max(3, acc / 100 * 78), x = i * (bw + gap), y = 92 - h;
+      const col = acc >= 90 ? "#37b39f" : acc >= 70 ? "#e8a020" : "#e8695f";
+      svg += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) +
+             '" height="' + h.toFixed(1) + '" rx="4" fill="' + col + '"/>' +
+             '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 4).toFixed(1) +
+             '" text-anchor="middle" font-size="11" font-weight="700" fill="#6b6053">' + acc + "</text>" +
+             '<text x="' + (x + bw / 2).toFixed(1) + '" y="110" text-anchor="middle" font-size="10" fill="#9b8f80">' +
+             new Date(r.d).toLocaleDateString(undefined, {month:"numeric", day:"numeric"}) + "</text>";
+    });
+    return '<div class="chart"><h3>Accuracy, last ' + recent.length + " tests</h3>" + svg + "</svg></div>";
+  }
+  function troubleSpots(list){
+    const counts = {};
+    list.forEach(r => (r.w || []).forEach(f => counts[f] = (counts[f] || 0) + 1));
+    const ids = Object.keys(counts).sort((a, b) => counts[b] - counts[a]).filter(id => counts[id] > 1).slice(0, 6);
+    const fam = {};
+    Object.keys(counts).forEach(id => {
+      const p = id.split(":"), lo = +p[1], hi = +p[2];
+      [lo, hi].forEach(f => { if(f > 1) fam[f] = (fam[f] || 0) + counts[id]; });
+    });
+    const topFam = Object.keys(fam).map(Number).sort((a, b) => fam[b] - fam[a])[0];
+    if(!ids.length && !topFam) return "";
+    let html = '<div class="facts"><h3>Trouble spots across all tests</h3>';
+    if(ids.length) html += ids.map(id => '<span class="chip">' + factLabel(id) + " <b>\u00d7" + counts[id] + "</b></span>").join("");
+    else html += '<p class="empty" style="margin:0 0 8px">No fact has been missed more than once yet.</p>';
+    if(topFam) html += '<p class="empty" style="margin:8px 0 0">Most misses involve the <b>' + topFam + " times table</b> (" + fam[topFam] + " total).</p>";
+    return html + "</div>";
+  }
+  function log(list){
+    const modes = {both:"Mixed", mult:"\u00d7 only", div:"\u00f7 only"};
+    const rows = list.slice(-8).reverse().map(r => {
+      const d = new Date(r.d);
+      return "<li><span class=\"dt\">" + d.toLocaleDateString(undefined, {month:"short", day:"numeric"}) + " " +
+             d.toLocaleTimeString(undefined, {hour:"numeric", minute:"2-digit"}) + " \u00b7 " + modes[r.m] +
+             (r.t ? " \u00b7 " + r.t + "s" : "") + "</span><span><b>" + Math.round(r.c / r.n * 100) + "%</b> \u00b7 " + r.c + "/" + r.n + " \u00b7 " + r.s.toFixed(1) + "s</span></li>";
+    }).join("");
+    return '<div class="facts"><h3>Recent scores</h3><ul class="log">' + rows + "</ul></div>";
+  }
+
+  function renderProgress(k){
+    const keys = Object.keys(DB.students);
+    const stu = DB.students[k];
+    $("pickerBox").innerHTML = keys.length > 1
+      ? '<label for="who">Student</label><select id="who">' + keys.map(x =>
+          '<option value="' + esc(x) + '"' + (x === k ? " selected" : "") + ">" + esc(DB.students[x].name) + "</option>").join("") + "</select>"
+      : "";
+    const sel = $("who");
+    if(sel) sel.addEventListener("change", () => renderProgress(sel.value));
+
+    if(!stu || !stu.attempts.length){
+      $("whoTitle").textContent = "Progress";
+      $("whoSub").textContent = "";
+      $("progBody").innerHTML = '<p class="empty">No tests saved yet. Finish a test and the score, date, accuracy and time all land here \u2014 along with daily, weekly and monthly trends.' +
+        (memoryOnly ? "<br><br>Heads up: this browser is blocking saved data, so history will only last until you close the tab." : "") + "</p>";
+      return;
+    }
+    const list = stu.attempts.slice().sort((a, b) => a.d - b.d);
+    const all = summarize(list);
+    $("whoTitle").textContent = stu.name;
+    $("whoSub").textContent = list.length + (list.length === 1 ? " test" : " tests") + " saved \u00b7 " +
+      all.acc + "% average accuracy \u00b7 " + all.sec + "s per question overall";
+
+    $("progBody").innerHTML =
+      '<div class="periods">' +
+        '<div class="period head"><span>Period</span><i>Tests</i><i>Accuracy</i><i>Per q.</i></div>' +
+        periodRow("Today", todayOnly(list)) +
+        periodRow("This week", sinceDays(list, 7)) +
+        periodRow("This month", sinceDays(list, 30)) +
+        periodRow("All time", list) +
+      "</div>" +
+      chart(list) + troubleSpots(list) + log(list) +
+      (memoryOnly ? '<p class="empty">Heads up: this browser is blocking saved data, so history will only last until you close the tab.</p>' : "");
+  }
+
+  /* ================= settings panel ================= */
+  function syncSetup(){
+    const secs = CFG.limit / 1000;
+    $("setupLbl").textContent = CFG.total + " questions \u00b7 " + secs.toFixed(1) + "s each";
+    $("secs").value = secs;
+    $("qty").value = CFG.total;
+    $("secsVal").textContent = secs.toFixed(1) + "s";
+    $("qtyVal").textContent = CFG.total;
+    document.querySelectorAll("#secChips .chip-btn").forEach(c => c.classList.toggle("on", +c.dataset.v === secs));
+    document.querySelectorAll("#qtyChips .chip-btn").forEach(c => c.classList.toggle("on", +c.dataset.v === CFG.total));
+  }
+  $("editBtn").addEventListener("click", () => {
+    const open = $("tuner").classList.toggle("open");
+    $("editBtn").textContent = open ? "Done" : "Edit";
+  });
+  $("secs").addEventListener("input", () => { CFG.limit = Math.round(+$("secs").value * 1000); syncSetup(); });
+  $("qty").addEventListener("input", () => { CFG.total = +$("qty").value; syncSetup(); });
+  $("secs").addEventListener("change", dbSave);
+  $("qty").addEventListener("change", dbSave);
+  $("secChips").addEventListener("click", e => {
+    const c = e.target.closest(".chip-btn");
+    if(c){ CFG.limit = +c.dataset.v * 1000; syncSetup(); dbSave(); }
+  });
+  $("qtyChips").addEventListener("click", e => {
+    const c = e.target.closest(".chip-btn");
+    if(c){ CFG.total = +c.dataset.v; syncSetup(); dbSave(); }
+  });
+
+  /* ================= wiring ================= */
+  function refreshNames(){
+    $("names").innerHTML = Object.keys(DB.students).map(k => '<option value="' + esc(DB.students[k].name) + '">').join("");
+  }
+  $("toProgress").addEventListener("click", () => {
+    const k = keyOf($("name").value) !== "guest" ? keyOf($("name").value) : (DB.last || "guest");
+    show("progress"); renderProgress(k);
+  });
+  $("seeProgress").addEventListener("click", () => { show("progress"); renderProgress(keyOf(S.name)); });
+  $("backHome").addEventListener("click", () => show("start"));
+  $("home").addEventListener("click", () => show("start"));
+  $("again").addEventListener("click", () => {
+    S = { name:S.name, mode:S.mode, i:0, correct:0, typed:"", times:[], recs:[], last:"", started:0 };
+    show("quiz"); nextQuestion();
+  });
+
+  let armed = false;
+  $("clearHist").addEventListener("click", async () => {
+    const sel = $("who");
+    const k = sel ? sel.value : (keyOf($("name").value) !== "guest" ? keyOf($("name").value) : (DB.last || "guest"));
+    if(!DB.students[k]) return;
+    if(!armed){
+      armed = true;
+      $("clearHist").textContent = "Tap again to erase " + DB.students[k].name + "'s history";
+      setTimeout(() => { armed = false; $("clearHist").textContent = "Clear this student's history"; }, 4000);
+      return;
+    }
+    delete DB.students[k];
+    armed = false;
+    $("clearHist").textContent = "Clear this student's history";
+    await dbSave();
+    refreshNames();
+    renderProgress(k);
+  });
+
+  // Platform hints: only show what applies to the device in hand.
+  (function hints(){
+    const ua = navigator.userAgent || "";
+    const iOS = /iPad|iPhone|iPod/.test(ua) || (/Mac/.test(ua) && "ontouchend" in document);
+    if(iOS) $("iosHint").style.display = "block";
+    if(!("ontouchstart" in window) && !(navigator.maxTouchPoints > 0)) $("padHint").style.display = "block";
+  })();
+
+  // Re-assert the notice on load in case the markup was edited out.
+  (function rights(){
+    const n = "\u00a9 2026 LIFTC";
+    const el = $("rights");
+    if(el && el.textContent.indexOf("LIFTC") < 0) el.textContent = n;
+    if(document.title.indexOf("MATH") < 0) document.title = "MATH \u2014 times tables 1\u201312";
+  })();
+
+
+  // Service workers must live in their own same-origin file, so this only
+  // runs in the hosted copy. Offline support + home-screen install.
+  if("serviceWorker" in navigator){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("./sw.js").catch(function(){});
+    });
+  }
+
+  (async function init(){
+    DB = await dbLoad();
+    if(!DB.students) DB = {students:{}, last:""};
+    if(DB.cfg && DB.cfg.limit && DB.cfg.total) CFG = DB.cfg;
+    syncSetup();
+    try{
+      const rec = await trackLoad();
+      if(rec && rec.blob){
+        const ok = await decode(await fileBytes(rec.blob), false);
+        if(ok) customName = rec.name || "Your music";
+      }
+    }catch(e){ /* no saved track, or storage unavailable */ }
+    if(!tune) await loadBuiltin();
+    setTrackLbl();
+    refreshNames();
+    if(DB.last && DB.students[DB.last]) $("name").value = DB.students[DB.last].name;
+    musicStart();
+  })();
+})();
+</script>
+</body>
+</html>
