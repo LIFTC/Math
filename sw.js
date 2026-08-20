@@ -1,6 +1,6 @@
 /* MATH — service worker.  © 2026 LIFTC.
    BUMP THIS VERSION ON EVERY UPDATE or phones will keep the old copy. */
-var CACHE = "math-v1";
+var CACHE = "math-v2";
 var ASSETS = [
   "./",
   "./index.html",
